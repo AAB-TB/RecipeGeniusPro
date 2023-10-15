@@ -37,9 +37,11 @@ namespace RecipeGenius
             }
             catch (Exception ex)
             {
-                // Handle exceptions here
+                // Log detailed error information using NLog
+                logger.Error(ex, "An error occurred in the LoadDataAsync method. Message: {0}", ex.Message);
+
+                // Show a user-friendly error message
                 MessageBox.Show("An error occurred: " + ex.Message);
-                logger.Error(ex, "An error occurred.");
             }
         }
 
@@ -47,34 +49,44 @@ namespace RecipeGenius
         {
             List<Recipe> recipeDataList = new List<Recipe>();
 
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            try
             {
-                // Open the database connection
-                await connection.OpenAsync();
-
-                // SQL query to select image and title of recipes
-                string sqlQuery = "SELECT r.RecipeID, r.Title, r.ImagePath, r.CategoryID " +
-                                  "FROM Recipes r";
-
-                using (SqlCommand command = new SqlCommand(sqlQuery, connection))
-                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    while (await reader.ReadAsync())
-                    {
-                        int recipeID = reader.GetInt32(0);
-                        string title = reader.GetString(1);
-                        string imagePath = reader.GetString(2);
-                        int categoryID = reader.GetInt32(3);
+                    // Open the database connection
+                    await connection.OpenAsync();
 
-                        // Create a Recipe object and add it to the list
-                        Recipe recipe = new Recipe(recipeID, title, string.Empty, categoryID, "", imagePath, new List<RecipeIngredients>());
-                        recipeDataList.Add(recipe);
+                    // SQL query to select image and title of recipes
+                    string sqlQuery = "SELECT r.RecipeID, r.Title, r.ImagePath, r.CategoryID " +
+                                      "FROM Recipes r";
+
+                    using (SqlCommand command = new SqlCommand(sqlQuery, connection))
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            int recipeID = reader.GetInt32(0);
+                            string title = reader.GetString(1);
+                            string imagePath = reader.GetString(2);
+                            int categoryID = reader.GetInt32(3);
+
+                            // Create a Recipe object and add it to the list
+                            Recipe recipe = new Recipe(recipeID, title, string.Empty, categoryID, "", imagePath, new List<RecipeIngredients>());
+                            recipeDataList.Add(recipe);
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                // Log detailed error information using NLog
+                logger.Error(ex, "An error occurred in the RetrieveDataFromDatabaseAsync method. Message: {0}", ex.Message);
+                
             }
 
             return recipeDataList;
         }
+
 
         private void homeBtn_Click(object sender, EventArgs e)
         {
@@ -116,21 +128,24 @@ namespace RecipeGenius
                         else
                         {
                             // User is not an admin or login failed
-                            //MessageBox.Show("Login failed. Please check your credentials.");
-                            logger.Error("Login failed for username: " + username);
+                            MessageBox.Show("Login failed. Please check your credentials.");
+                            logger.Error($"Login failed for username: {username}.");
                         }
                     }
                 }
             }
+            catch (SqlException sqlEx)
+            {
+                // Handle SQL-related exceptions separately
+                MessageBox.Show("An SQL error occurred: " + sqlEx.Message);
+                logger.Error(sqlEx, "SQL error occurred in adminloginBtn_Click. Username: {0}, Message: {1}", username, sqlEx.Message);
+            }
             catch (Exception ex)
             {
-                // Handle exceptions here
+                // Handle other exceptions here
                 MessageBox.Show("An error occurred: " + ex.Message);
-                logger.Error(ex, "An error occurred.");
+                logger.Error(ex, "An error occurred in adminloginBtn_Click. Username: {0}, Message: {1}", username, ex.Message);
             }
-
-
-
         }
 
         private void aboutBtn_Click(object sender, EventArgs e)
@@ -151,16 +166,24 @@ namespace RecipeGenius
         {
             string searchText = searchTextBox.Text;
 
-            // Implement autocomplete logic here
-            if (!string.IsNullOrWhiteSpace(searchText))
+            try
             {
-                // Call a method to get and display autocomplete suggestions
-                DisplayAutocompleteSuggestions(searchText);
+                // Implement autocomplete logic here
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    // Call a method to get and display autocomplete suggestions
+                    DisplayAutocompleteSuggestions(searchText);
+                }
+                else
+                {
+                    LoadDataAsync();
+                }
             }
-            else
+            catch (Exception ex)
             {
-
-                LoadDataAsync();
+                // Handle exceptions here
+                MessageBox.Show("An error occurred: " + ex.Message);
+                logger.Error(ex, "An error occurred in searchTextBox_TextChanged. Message: {0}", ex.Message);
             }
         }
 
@@ -191,9 +214,11 @@ namespace RecipeGenius
             }
             catch (Exception ex)
             {
-                // Handle exceptions here
-                MessageBox.Show("An error occurred: " + ex.Message);
-                logger.Error(ex, "An error occurred while displaying autocomplete suggestions.");
+                // Log detailed error information using NLog
+                logger.Error(ex, "An error occurred while displaying autocomplete suggestions for search text: {0}. Message: {1}", searchText, ex.Message);
+
+                // Show a user-friendly error message
+                MessageBox.Show("An error occurred while displaying autocomplete suggestions: " + ex.Message);
             }
         }
 
@@ -203,35 +228,43 @@ namespace RecipeGenius
         {
             List<string> suggestions = new List<string>();
 
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            try
             {
-                await connection.OpenAsync();
-
-
-                string sqlQuery = "SELECT r.Title, c.CategoryName " +
-                          "FROM Recipes r " +
-                          "JOIN Categories c ON r.CategoryID = c.CategoryID " +
-                          "WHERE (r.Title LIKE @searchText + '%' OR c.CategoryName LIKE @searchText + '%')";
-
-
-                using (SqlCommand command = new SqlCommand(sqlQuery, connection))
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    command.Parameters.AddWithValue("@searchText", searchText);
+                    await connection.OpenAsync();
 
-                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    string sqlQuery = "SELECT r.Title, c.CategoryName " +
+                                      "FROM Recipes r " +
+                                      "JOIN Categories c ON r.CategoryID = c.CategoryID " +
+                                      "WHERE (r.Title LIKE @searchText + '%' OR c.CategoryName LIKE @searchText + '%')";
+
+                    using (SqlCommand command = new SqlCommand(sqlQuery, connection))
                     {
-                        while (await reader.ReadAsync())
+                        command.Parameters.AddWithValue("@searchText", searchText);
+
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            suggestions.Add(reader.GetString(0)); // Add recipe titles
-                            suggestions.Add(reader.GetString(1)); // Add category names
+                            while (await reader.ReadAsync())
+                            {
+                                suggestions.Add(reader.GetString(0)); // Add recipe titles
+                                suggestions.Add(reader.GetString(1)); // Add category names
+                            }
                         }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                // Log detailed error information using NLog
+                logger.Error(ex, "An error occurred in GetAutocompleteSuggestionsAsync for search text: {0}. Message: {1}", searchText, ex.Message);
+
+                // You can choose to re-throw the exception if needed
+                throw;
+            }
 
             return suggestions;
         }
-
 
         private async void PerformSearch(string selectedSuggestion)
         {
@@ -249,48 +282,61 @@ namespace RecipeGenius
                     recipeUserControl.SetTitle(data.Title);
                     flowLayoutPanel1.Controls.Add(recipeUserControl);
                 }
-               
             }
             catch (Exception ex)
             {
-                // Handle exceptions here
+                // Log detailed error information using NLog
+                logger.Error(ex, "An error occurred in PerformSearch for selected suggestion: {0}. Message: {1}", selectedSuggestion, ex.Message);
+
+                // Show a user-friendly error message
                 MessageBox.Show("An error occurred during the search: " + ex.Message);
-                logger.Error(ex, "An error occurred during the search.");
             }
         }
+
         private async Task<List<Recipe>> SearchRecipesAsync(string searchText)
         {
             List<Recipe> searchResults = new List<Recipe>();
 
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            try
             {
-                await connection.OpenAsync();
-
-                // SQL query to search for recipes based on title and category
-                string sqlQuery = "SELECT r.RecipeID, r.Title, r.ImagePath, r.CategoryID " +
-                                  "FROM Recipes r " +
-                                  "JOIN Categories c ON r.CategoryID = c.CategoryID " +
-                                  "WHERE r.Title LIKE @searchText OR c.CategoryName LIKE @searchText";
-
-                using (SqlCommand command = new SqlCommand(sqlQuery, connection))
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    command.Parameters.AddWithValue("@searchText", "%" + searchText + "%");
+                    await connection.OpenAsync();
 
-                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    // SQL query to search for recipes based on title and category
+                    string sqlQuery = "SELECT r.RecipeID, r.Title, r.ImagePath, r.CategoryID " +
+                                      "FROM Recipes r " +
+                                      "JOIN Categories c ON r.CategoryID = c.CategoryID " +
+                                      "WHERE r.Title LIKE @searchText OR c.CategoryName LIKE @searchText";
+
+                    using (SqlCommand command = new SqlCommand(sqlQuery, connection))
                     {
-                        while (await reader.ReadAsync())
-                        {
-                            int recipeID = reader.GetInt32(0);
-                            string title = reader.GetString(1);
-                            string imagePath = reader.GetString(2);
-                            int categoryID = reader.GetInt32(3);
+                        command.Parameters.AddWithValue("@searchText", "%" + searchText + "%");
 
-                            // Create a Recipe object and add it to the search results
-                            Recipe recipe = new Recipe(recipeID, title, string.Empty, categoryID, "", imagePath, new List<RecipeIngredients>());
-                            searchResults.Add(recipe);
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                int recipeID = reader.GetInt32(0);
+                                string title = reader.GetString(1);
+                                string imagePath = reader.GetString(2);
+                                int categoryID = reader.GetInt32(3);
+
+                                // Create a Recipe object and add it to the search results
+                                Recipe recipe = new Recipe(recipeID, title, string.Empty, categoryID, "", imagePath, new List<RecipeIngredients>());
+                                searchResults.Add(recipe);
+                            }
                         }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                // Log detailed error information using NLog
+                logger.Error(ex, "An error occurred in SearchRecipesAsync for search text: {0}. Message: {1}", searchText, ex.Message);
+
+                // You can choose to re-throw the exception if needed
+                throw;
             }
 
             return searchResults;
@@ -300,16 +346,27 @@ namespace RecipeGenius
 
         private void suggestionsListBox_SelectedIndexChanged_1(object sender, EventArgs e)
         {
-            if (suggestionsListBox.SelectedIndex != -1)
+            try
             {
-                string selectedSuggestion = suggestionsListBox.SelectedItem.ToString();
-                // Set the selected suggestion as the text in the searchTextBox
-                searchTextBox.Text = selectedSuggestion;
-                // Perform the search based on the selected suggestion
-                PerformSearch(selectedSuggestion);
+                if (suggestionsListBox.SelectedIndex != -1)
+                {
+                    string selectedSuggestion = suggestionsListBox.SelectedItem.ToString();
+                    // Set the selected suggestion as the text in the searchTextBox
+                    searchTextBox.Text = selectedSuggestion;
+                    // Perform the search based on the selected suggestion
+                    PerformSearch(selectedSuggestion);
 
-                // Explicitly hide the suggestionsListBox
-                suggestionsListBox.Visible = false;
+                    // Explicitly hide the suggestionsListBox
+                    suggestionsListBox.Visible = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log detailed error information using NLog
+                logger.Error(ex, "An error occurred in suggestionsListBox_SelectedIndexChanged_1. Message: {0}", ex.Message);
+
+                // Show a user-friendly error message
+                MessageBox.Show("An error occurred: " + ex.Message);
             }
 
         }
