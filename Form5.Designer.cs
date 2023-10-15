@@ -30,7 +30,6 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form5));
             splitContainer1 = new SplitContainer();
-            btnAddIngredient = new Button();
             btnDeleteRecipe = new Button();
             updateBtn = new Button();
             btnSaveRecipe = new Button();
@@ -41,6 +40,7 @@
             flowLayoutPanel1 = new FlowLayoutPanel();
             searchTextBox = new TextBox();
             tabPage1 = new TabPage();
+            deleteIngredient = new Button();
             ingredientBtn = new Button();
             dataGridViewIngredients = new DataGridView();
             ProductList = new DataGridViewComboBoxColumn();
@@ -63,7 +63,6 @@
             newProductBtn = new Button();
             ProductComboBox = new ComboBox();
             openFileDialog1 = new OpenFileDialog();
-            deleteIngredient = new Button();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -88,7 +87,6 @@
             // splitContainer1.Panel1
             // 
             splitContainer1.Panel1.BackColor = Color.CornflowerBlue;
-            splitContainer1.Panel1.Controls.Add(btnAddIngredient);
             splitContainer1.Panel1.Controls.Add(btnDeleteRecipe);
             splitContainer1.Panel1.Controls.Add(updateBtn);
             splitContainer1.Panel1.Controls.Add(btnSaveRecipe);
@@ -102,13 +100,6 @@
             splitContainer1.Size = new Size(1469, 898);
             splitContainer1.SplitterDistance = 295;
             splitContainer1.TabIndex = 0;
-            // 
-            // btnAddIngredient
-            // 
-            btnAddIngredient.Location = new Point(0, 0);
-            btnAddIngredient.Name = "btnAddIngredient";
-            btnAddIngredient.Size = new Size(75, 23);
-            btnAddIngredient.TabIndex = 0;
             // 
             // btnDeleteRecipe
             // 
@@ -238,6 +229,18 @@
             tabPage1.Size = new Size(1162, 862);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Add/Update Recipe";
+            // 
+            // deleteIngredient
+            // 
+            deleteIngredient.Font = new Font("Algerian", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
+            deleteIngredient.ForeColor = Color.DarkGreen;
+            deleteIngredient.Location = new Point(800, 652);
+            deleteIngredient.Name = "deleteIngredient";
+            deleteIngredient.Size = new Size(226, 41);
+            deleteIngredient.TabIndex = 23;
+            deleteIngredient.Text = "Delete";
+            deleteIngredient.UseVisualStyleBackColor = true;
+            deleteIngredient.Click += deleteIngredient_Click;
             // 
             // ingredientBtn
             // 
@@ -490,18 +493,6 @@
             // 
             openFileDialog1.FileName = "openFileDialog1";
             // 
-            // deleteIngredient
-            // 
-            deleteIngredient.Font = new Font("Algerian", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
-            deleteIngredient.ForeColor = Color.DarkGreen;
-            deleteIngredient.Location = new Point(800, 652);
-            deleteIngredient.Name = "deleteIngredient";
-            deleteIngredient.Size = new Size(226, 41);
-            deleteIngredient.TabIndex = 23;
-            deleteIngredient.Text = "Delete";
-            deleteIngredient.UseVisualStyleBackColor = true;
-            deleteIngredient.Click += deleteIngredient_Click;
-            // 
             // Form5
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -548,7 +539,6 @@
         private TextBox txtRecipeTitle;
         private ComboBox categoryComboBox;
         private TextBox txtCookingTime;
-        private Button btnAddIngredient;
         private OpenFileDialog openFileDialog1;
         private DataGridView dataGridViewIngredients;
         private DataGridViewComboBoxColumn ProductList;
