@@ -173,6 +173,16 @@ namespace RecipeGenius
 
         private async void btnSaveRecipe_Click(object sender, EventArgs e)
         {
+            // Check if essential fields are empty
+            if (string.IsNullOrWhiteSpace(txtRecipeTitle.Text) ||
+                string.IsNullOrWhiteSpace(txtRecipeInstructions.Text) ||
+                categoryComboBox.SelectedValue == null ||
+                string.IsNullOrWhiteSpace(txtCookingTime.Text) ||
+                dataGridViewIngredients.Rows.Count == 0)
+            {
+                MessageBox.Show("Please fill in all the required fields before saving.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return; // Exit the method
+            }
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();

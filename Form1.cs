@@ -215,12 +215,12 @@ namespace RecipeGenius
                 string sqlQuery = "SELECT r.Title, c.CategoryName " +
                           "FROM Recipes r " +
                           "JOIN Categories c ON r.CategoryID = c.CategoryID " +
-                          "WHERE r.Title LIKE @searchText OR c.CategoryName LIKE @searchText";
+                          "WHERE (r.Title LIKE @searchText + '%' OR c.CategoryName LIKE @searchText + '%')";
 
 
                 using (SqlCommand command = new SqlCommand(sqlQuery, connection))
                 {
-                    command.Parameters.AddWithValue("@searchText", "%" + searchText + "%");
+                    command.Parameters.AddWithValue("@searchText", searchText);
 
                     using (SqlDataReader reader = await command.ExecuteReaderAsync())
                     {
