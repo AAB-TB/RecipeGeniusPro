@@ -74,8 +74,7 @@ namespace RecipeGenius
             }
             catch (Exception ex)
             {
-                MessageBox.Show("An error occurred: " + ex.Message);
-                logger.Error(ex, "An error occurred.");
+                HandleError("LoadDataAsync", ex);
             }
         }
 
@@ -83,25 +82,32 @@ namespace RecipeGenius
         {
             List<Recipe> recipeDataList = new List<Recipe>();
 
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            try
             {
-                await connection.OpenAsync();
-
-                string sqlQuery = "SELECT r.RecipeID, r.Title, r.ImagePath FROM Recipes r";
-
-                using (SqlCommand command = new SqlCommand(sqlQuery, connection))
-                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    while (await reader.ReadAsync())
-                    {
-                        int recipeID = reader.GetInt32(0);
-                        string title = reader.GetString(1);
-                        string imagePath = reader.GetString(2);
+                    await connection.OpenAsync();
 
-                        Recipe recipe = new Recipe(recipeID, title, string.Empty, 0, "", imagePath, new List<RecipeIngredients>());
-                        recipeDataList.Add(recipe);
+                    string sqlQuery = "SELECT r.RecipeID, r.Title, r.ImagePath FROM Recipes r";
+
+                    using (SqlCommand command = new SqlCommand(sqlQuery, connection))
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            int recipeID = reader.GetInt32(0);
+                            string title = reader.GetString(1);
+                            string imagePath = reader.GetString(2);
+
+                            Recipe recipe = new Recipe(recipeID, title, string.Empty, 0, "", imagePath, new List<RecipeIngredients>());
+                            recipeDataList.Add(recipe);
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                HandleError("RetrieveDataFromDatabaseAsync", ex);
             }
 
             return recipeDataList;
@@ -139,8 +145,7 @@ namespace RecipeGenius
             }
             catch (Exception ex)
             {
-                MessageBox.Show("An error occurred while loading categories: " + ex.Message);
-                logger.Error(ex, "Error loading categories.");
+                HandleError("LoadCategories", ex);
             }
         }
 
@@ -165,62 +170,68 @@ namespace RecipeGenius
             }
             catch (Exception ex)
             {
-                MessageBox.Show("An error occurred while loading products: " + ex.Message);
-                logger.Error(ex, "Error loading products.");
+                HandleError("LoadProducts", ex);
             }
         }
 
 
         private async void btnSaveRecipe_Click(object sender, EventArgs e)
         {
-            // Check if essential fields are empty
-            if (string.IsNullOrWhiteSpace(txtRecipeTitle.Text) ||
-                string.IsNullOrWhiteSpace(txtRecipeInstructions.Text) ||
-                categoryComboBox.SelectedValue == null ||
-                string.IsNullOrWhiteSpace(txtCookingTime.Text) ||
-                dataGridViewIngredients.Rows.Count == 0)
+            try
             {
-                MessageBox.Show("Please fill in all the required fields before saving.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return; // Exit the method
-            }
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                connection.Open();
-                string insertRecipeQuery = "INSERT INTO Recipes (Title, RecipeDescription, CategoryID, CookingTime, ImagePath) " +
-                    "VALUES (@Title, @Description, @Category, @CookingTime, @ImagePath); SELECT SCOPE_IDENTITY()";
-
-                using (SqlCommand cmd = new SqlCommand(insertRecipeQuery, connection))
+                // Check if essential fields are empty
+                if (string.IsNullOrWhiteSpace(txtRecipeTitle.Text) ||
+                    string.IsNullOrWhiteSpace(txtRecipeInstructions.Text) ||
+                    categoryComboBox.SelectedValue == null ||
+                    string.IsNullOrWhiteSpace(txtCookingTime.Text) ||
+                    dataGridViewIngredients.Rows.Count == 0)
                 {
-                    cmd.Parameters.AddWithValue("@Title", txtRecipeTitle.Text);
-                    cmd.Parameters.AddWithValue("@Description", txtRecipeInstructions.Text);
-                    cmd.Parameters.AddWithValue("@Category", categoryComboBox.SelectedValue);
-                    cmd.Parameters.AddWithValue("@CookingTime", txtCookingTime.Text);
-                    cmd.Parameters.AddWithValue("@ImagePath", pictureBoxRecipe.Tag ?? DBNull.Value);
+                    MessageBox.Show("Please fill in all the required fields before saving.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return; // Exit the method
+                }
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    string insertRecipeQuery = "INSERT INTO Recipes (Title, RecipeDescription, CategoryID, CookingTime, ImagePath) " +
+                        "VALUES (@Title, @Description, @Category, @CookingTime, @ImagePath); SELECT SCOPE_IDENTITY()";
 
-                    decimal recipeID = Convert.ToDecimal(cmd.ExecuteScalar());
-
-                    foreach (DataGridViewRow row in dataGridViewIngredients.Rows)
+                    using (SqlCommand cmd = new SqlCommand(insertRecipeQuery, connection))
                     {
-                        int productID = (int)row.Cells["ProductList"].Value;
-                        string quantity = row.Cells["QuantityBox"].Value?.ToString() ?? string.Empty;
+                        cmd.Parameters.AddWithValue("@Title", txtRecipeTitle.Text);
+                        cmd.Parameters.AddWithValue("@Description", txtRecipeInstructions.Text);
+                        cmd.Parameters.AddWithValue("@Category", categoryComboBox.SelectedValue);
+                        cmd.Parameters.AddWithValue("@CookingTime", txtCookingTime.Text);
+                        cmd.Parameters.AddWithValue("@ImagePath", pictureBoxRecipe.Tag ?? DBNull.Value);
 
-                        string insertIngredientQuery = "INSERT INTO RecipeIngredients (RecipeID, ProductID, Quantity) " +
-                            "VALUES (@RecipeID, @ProductID, @Quantity)";
+                        decimal recipeID = Convert.ToDecimal(cmd.ExecuteScalar());
 
-                        using (SqlCommand ingredientCmd = new SqlCommand(insertIngredientQuery, connection))
+                        foreach (DataGridViewRow row in dataGridViewIngredients.Rows)
                         {
-                            ingredientCmd.Parameters.AddWithValue("@RecipeID", recipeID);
-                            ingredientCmd.Parameters.AddWithValue("@ProductID", productID);
-                            ingredientCmd.Parameters.AddWithValue("@Quantity", quantity);
+                            int productID = (int)row.Cells["ProductList"].Value;
+                            string quantity = row.Cells["QuantityBox"].Value?.ToString() ?? string.Empty;
 
-                            ingredientCmd.ExecuteNonQuery();
+                            string insertIngredientQuery = "INSERT INTO RecipeIngredients (RecipeID, ProductID, Quantity) " +
+                                "VALUES (@RecipeID, @ProductID, @Quantity)";
+
+                            using (SqlCommand ingredientCmd = new SqlCommand(insertIngredientQuery, connection))
+                            {
+                                ingredientCmd.Parameters.AddWithValue("@RecipeID", recipeID);
+                                ingredientCmd.Parameters.AddWithValue("@ProductID", productID);
+                                ingredientCmd.Parameters.AddWithValue("@Quantity", quantity);
+
+                                ingredientCmd.ExecuteNonQuery();
+                            }
                         }
                     }
-                }
 
-                MessageBox.Show("Recipe added successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                ClearForm();
-                await LoadDataAsync();
+                    MessageBox.Show("Recipe added successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    ClearForm();
+                    await LoadDataAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleError("btnSaveRecipe_Click", ex);
             }
         }
 
@@ -262,43 +273,50 @@ namespace RecipeGenius
             }
             catch (Exception ex)
             {
-                MessageBox.Show("An error occurred while loading the recipe: " + ex.Message);
-                logger.Error(ex, "Error loading the recipe.");
+                HandleError("LoadSpecificRecipeAsync", ex);
             }
         }
 
         private async Task<Recipe> RetrieveRecipeFromDatabaseAsync(int recipeID)
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            try
             {
-                await connection.OpenAsync();
-
-                string sqlQuery = "SELECT RecipeID, Title, RecipeDescription, CategoryID, CookingTime, ImagePath " +
-                    "FROM Recipes WHERE RecipeID = @RecipeID";
-
-                using (SqlCommand command = new SqlCommand(sqlQuery, connection))
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    command.Parameters.AddWithValue("@RecipeID", recipeID);
+                    await connection.OpenAsync();
 
-                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    string sqlQuery = "SELECT RecipeID, Title, RecipeDescription, CategoryID, CookingTime, ImagePath " +
+                        "FROM Recipes WHERE RecipeID = @RecipeID";
+
+                    using (SqlCommand command = new SqlCommand(sqlQuery, connection))
                     {
-                        if (await reader.ReadAsync())
+                        command.Parameters.AddWithValue("@RecipeID", recipeID);
+
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            return new Recipe(
-                                reader.GetInt32(0),
-                                reader.GetString(1),
-                                reader.GetString(2),
-                                reader.GetInt32(3),
-                                reader.GetString(4),
-                                reader.IsDBNull(5) ? string.Empty : reader.GetString(5),
-                                new List<RecipeIngredients>());
+                            if (await reader.ReadAsync())
+                            {
+                                return new Recipe(
+                                    reader.GetInt32(0),
+                                    reader.GetString(1),
+                                    reader.GetString(2),
+                                    reader.GetInt32(3),
+                                    reader.GetString(4),
+                                    reader.IsDBNull(5) ? string.Empty : reader.GetString(5),
+                                    new List<RecipeIngredients>());
+                            }
                         }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                HandleError("RetrieveRecipeFromDatabaseAsync", ex);
+            }
 
             return null;
         }
+
 
         private void LoadIngredientsForRecipe(int recipeID)
         {
@@ -341,67 +359,78 @@ namespace RecipeGenius
             }
             catch (Exception ex)
             {
-                MessageBox.Show("An error occurred while loading ingredients: " + ex.Message);
-                logger.Error(ex, "Error loading ingredients.");
+                HandleError("LoadIngredientsForRecipe", ex);
             }
         }
 
 
         private async Task UpdateIngredientsForRecipeAsync(int recipeID)
         {
-            // Clear existing ingredients for the recipe
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            try
             {
-                await connection.OpenAsync();
-                string deleteIngredientsQuery = "DELETE FROM RecipeIngredients WHERE RecipeID = @RecipeID";
-
-                using (SqlCommand deleteCmd = new SqlCommand(deleteIngredientsQuery, connection))
+                // Clear existing ingredients for the recipe
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    deleteCmd.Parameters.AddWithValue("@RecipeID", recipeID);
-                    await deleteCmd.ExecuteNonQueryAsync();
-                }
-            }
+                    await connection.OpenAsync();
+                    string deleteIngredientsQuery = "DELETE FROM RecipeIngredients WHERE RecipeID = @RecipeID";
 
-            // Insert updated ingredients
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                await connection.OpenAsync();
-
-                foreach (DataGridViewRow row in dataGridViewIngredients.Rows)
-                {
-                    int productID = (int)row.Cells["ProductList"].Value;
-                    string quantity = row.Cells["QuantityBox"].Value?.ToString() ?? string.Empty;
-
-                    string insertIngredientQuery = "INSERT INTO RecipeIngredients (RecipeID, ProductID, Quantity) " +
-                        "VALUES (@RecipeID, @ProductID, @Quantity)";
-
-                    using (SqlCommand insertCmd = new SqlCommand(insertIngredientQuery, connection))
+                    using (SqlCommand deleteCmd = new SqlCommand(deleteIngredientsQuery, connection))
                     {
-                        insertCmd.Parameters.AddWithValue("@RecipeID", recipeID);
-                        insertCmd.Parameters.AddWithValue("@ProductID", productID);
-                        insertCmd.Parameters.AddWithValue("@Quantity", quantity);
-
-                        await insertCmd.ExecuteNonQueryAsync();
+                        deleteCmd.Parameters.AddWithValue("@RecipeID", recipeID);
+                        await deleteCmd.ExecuteNonQueryAsync();
                     }
                 }
+
+                // Insert updated ingredients
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    foreach (DataGridViewRow row in dataGridViewIngredients.Rows)
+                    {
+                        int productID = (int)row.Cells["ProductList"].Value;
+                        string quantity = row.Cells["QuantityBox"].Value?.ToString() ?? string.Empty;
+
+                        string insertIngredientQuery = "INSERT INTO RecipeIngredients (RecipeID, ProductID, Quantity) " +
+                            "VALUES (@RecipeID, @ProductID, @Quantity)";
+
+                        using (SqlCommand insertCmd = new SqlCommand(insertIngredientQuery, connection))
+                        {
+                            insertCmd.Parameters.AddWithValue("@RecipeID", recipeID);
+                            insertCmd.Parameters.AddWithValue("@ProductID", productID);
+                            insertCmd.Parameters.AddWithValue("@Quantity", quantity);
+
+                            await insertCmd.ExecuteNonQueryAsync();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleError("UpdateIngredientsForRecipeAsync", ex);
             }
         }
 
 
-
         private void pictureBoxRecipe_Click(object sender, EventArgs e)
         {
-
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            try
             {
-                openFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.gif;*.bmp;*.ico";
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                using (OpenFileDialog openFileDialog = new OpenFileDialog())
                 {
-                    // Store the selected image path in the PictureBox's Tag property
-                    pictureBoxRecipe.Tag = openFileDialog.FileName;
-                    // Display the selected image in the PictureBox
-                    pictureBoxRecipe.Image = Image.FromFile(openFileDialog.FileName);
+                    openFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.gif;*.bmp;*.ico";
+                    if (openFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        // Store the selected image path in the PictureBox's Tag property
+                        pictureBoxRecipe.Tag = openFileDialog.FileName;
+                        // Display the selected image in the PictureBox
+                        pictureBoxRecipe.Image = Image.FromFile(openFileDialog.FileName);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                HandleError("pictureBoxRecipe_Click", ex);
             }
         }
 
@@ -412,36 +441,43 @@ namespace RecipeGenius
 
         private async void updateBtn_Click_1(object sender, EventArgs e)
         {
-            // Update the selected recipe
-            if (selectedRecipe == null)
+            try
             {
-                MessageBox.Show("No recipe is selected for update.");
-                return;
-            }
-
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                connection.Open();
-                string updateRecipeQuery = "UPDATE Recipes SET Title = @Title, RecipeDescription = @Description, " +
-                    "CategoryID = @Category, CookingTime = @CookingTime, ImagePath = @ImagePath WHERE RecipeID = @RecipeID";
-
-                using (SqlCommand cmd = new SqlCommand(updateRecipeQuery, connection))
+                // Update the selected recipe
+                if (selectedRecipe == null)
                 {
-                    cmd.Parameters.AddWithValue("@RecipeID", selectedRecipe.RecipeID);
-                    cmd.Parameters.AddWithValue("@Title", txtRecipeTitle.Text);
-                    cmd.Parameters.AddWithValue("@Description", txtRecipeInstructions.Text);
-                    cmd.Parameters.AddWithValue("@Category", categoryComboBox.SelectedValue);
-                    cmd.Parameters.AddWithValue("@CookingTime", txtCookingTime.Text);
-                    cmd.Parameters.AddWithValue("@ImagePath", pictureBoxRecipe.Tag ?? DBNull.Value);
-
-                    cmd.ExecuteNonQuery();
+                    MessageBox.Show("No recipe is selected for update.");
+                    return;
                 }
 
-                // Update the ingredients
-                await UpdateIngredientsForRecipeAsync(selectedRecipe.RecipeID);
-                MessageBox.Show("Recipe updated successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                await LoadDataAsync();
-                ClearForm();
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    string updateRecipeQuery = "UPDATE Recipes SET Title = @Title, RecipeDescription = @Description, " +
+                        "CategoryID = @Category, CookingTime = @CookingTime, ImagePath = @ImagePath WHERE RecipeID = @RecipeID";
+
+                    using (SqlCommand cmd = new SqlCommand(updateRecipeQuery, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@RecipeID", selectedRecipe.RecipeID);
+                        cmd.Parameters.AddWithValue("@Title", txtRecipeTitle.Text);
+                        cmd.Parameters.AddWithValue("@Description", txtRecipeInstructions.Text);
+                        cmd.Parameters.AddWithValue("@Category", categoryComboBox.SelectedValue);
+                        cmd.Parameters.AddWithValue("@CookingTime", txtCookingTime.Text);
+                        cmd.Parameters.AddWithValue("@ImagePath", pictureBoxRecipe.Tag ?? DBNull.Value);
+
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    // Update the ingredients
+                    await UpdateIngredientsForRecipeAsync(selectedRecipe.RecipeID);
+                    MessageBox.Show("Recipe updated successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    await LoadDataAsync();
+                    ClearForm();
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleError("updateBtn_Click_1", ex);
             }
         }
 
@@ -457,11 +493,18 @@ namespace RecipeGenius
             DialogResult result = MessageBox.Show("Are you sure you want to delete this recipe?", "Confirm Deletion", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
             if (result == DialogResult.Yes)
             {
-                // Call the DeleteRecipe method with the selected recipe's ID
-                DeleteRecipe(selectedRecipe.RecipeID);
-                flowLayoutPanel1.Controls.Clear();
-                LoadDataAsync(); // Reload the recipes
-                ClearForm(); // Clear the form
+                try
+                {
+                    // Call the DeleteRecipe method with the selected recipe's ID
+                    DeleteRecipe(selectedRecipe.RecipeID);
+                    flowLayoutPanel1.Controls.Clear();
+                    LoadDataAsync(); // Reload the recipes
+                    ClearForm(); // Clear the form
+                }
+                catch (Exception ex)
+                {
+                    HandleError("Recipe Deletion", ex);
+                }
             }
         }
 
@@ -512,30 +555,38 @@ namespace RecipeGenius
 
             if (!string.IsNullOrEmpty(productName))
             {
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                try
                 {
-                    connection.Open();
-                    string insertProductQuery = "INSERT INTO Products (ProductName, ProductDescription) VALUES (@ProductName, @ProductDescription)";
-
-                    using (SqlCommand cmd = new SqlCommand(insertProductQuery, connection))
+                    using (SqlConnection connection = new SqlConnection(connectionString))
                     {
-                        cmd.Parameters.AddWithValue("@ProductName", productName);
-                        cmd.Parameters.AddWithValue("@ProductDescription", productDescription);
+                        connection.Open();
+                        string insertProductQuery = "INSERT INTO Products (ProductName, ProductDescription) VALUES (@ProductName, @ProductDescription)";
 
-                        int rowsAffected = cmd.ExecuteNonQuery();
+                        using (SqlCommand cmd = new SqlCommand(insertProductQuery, connection))
+                        {
+                            cmd.Parameters.AddWithValue("@ProductName", productName);
+                            cmd.Parameters.AddWithValue("@ProductDescription", productDescription);
 
-                        if (rowsAffected > 0)
-                        {
-                            MessageBox.Show("Product Saved Successfully!");
-                            newProduct.Text = ""; // Clear the TextBox
-                            newProductDescription.Text = ""; // Clear the description TextBox
-                            LoadProducts();
-                        }
-                        else
-                        {
-                            MessageBox.Show("Failed to save the product.");
+                            int rowsAffected = cmd.ExecuteNonQuery();
+
+                            if (rowsAffected > 0)
+                            {
+                                MessageBox.Show("Product Saved Successfully!");
+                                newProduct.Text = ""; // Clear the TextBox
+                                newProductDescription.Text = ""; // Clear the description TextBox
+                                LoadProducts();
+                            }
+                            else
+                            {
+                                MessageBox.Show("Failed to save the product. Please try again.");
+                            }
                         }
                     }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("An error occurred: " + ex.Message);
+                    logger.Error(ex, "Error saving the product.");
                 }
             }
             else
@@ -552,34 +603,42 @@ namespace RecipeGenius
             {
                 int productId = (int)ProductComboBox.SelectedValue;
 
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                try
                 {
-                    connection.Open();
-                    string deleteProductQuery = "DELETE FROM Products WHERE ProductID = @ProductID";
-                    SqlCommand cmd = new SqlCommand(deleteProductQuery, connection);
-                    cmd.Parameters.AddWithValue("@ProductID", productId);
-
-                    int rowsAffected = cmd.ExecuteNonQuery();
-
-                    if (rowsAffected > 0)
+                    using (SqlConnection connection = new SqlConnection(connectionString))
                     {
-                        MessageBox.Show("Product Deleted Successfully!");
-                        ProductComboBox.DataSource = null; // Clear the combo box
-                        LoadProducts();
+                        connection.Open();
+                        string deleteProductQuery = "DELETE FROM Products WHERE ProductID = @ProductID";
+                        SqlCommand cmd = new SqlCommand(deleteProductQuery, connection);
+                        cmd.Parameters.AddWithValue("@ProductID", productId);
 
-                        // Repopulate the combo box to reflect the updated data
-                        string selectProductsQuery = "SELECT ProductID, ProductName FROM Products";
-                        SqlDataAdapter productAdapter = new SqlDataAdapter(selectProductsQuery, connection);
-                        DataTable productTable = new DataTable();
-                        productAdapter.Fill(productTable);
-                        ProductComboBox.DataSource = productTable;
-                        ProductComboBox.DisplayMember = "ProductName";
-                        ProductComboBox.ValueMember = "ProductID";
+                        int rowsAffected = cmd.ExecuteNonQuery();
+
+                        if (rowsAffected > 0)
+                        {
+                            MessageBox.Show("Product Deleted Successfully!");
+                            ProductComboBox.DataSource = null; // Clear the combo box
+                            LoadProducts();
+
+                            // Repopulate the combo box to reflect the updated data
+                            string selectProductsQuery = "SELECT ProductID, ProductName FROM Products";
+                            SqlDataAdapter productAdapter = new SqlDataAdapter(selectProductsQuery, connection);
+                            DataTable productTable = new DataTable();
+                            productAdapter.Fill(productTable);
+                            ProductComboBox.DataSource = productTable;
+                            ProductComboBox.DisplayMember = "ProductName";
+                            ProductComboBox.ValueMember = "ProductID";
+                        }
+                        else
+                        {
+                            MessageBox.Show("Failed to delete the product. Please try again.");
+                        }
                     }
-                    else
-                    {
-                        MessageBox.Show("Failed to delete the product.");
-                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("An error occurred: " + ex.Message);
+                    logger.Error(ex, "Error deleting the product.");
                 }
             }
             else
@@ -590,29 +649,37 @@ namespace RecipeGenius
 
         private void tabPage3_Click(object sender, EventArgs e)
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            try
             {
-                connection.Open();
-                string selectCategoriesQuery = "SELECT CategoryID, CategoryName FROM Categories";
-                SqlDataAdapter categoryAdapter = new SqlDataAdapter(selectCategoriesQuery, connection);
-                DataTable categoryTable = new DataTable();
-                categoryAdapter.Fill(categoryTable);
-                comboBoxCategory.DataSource = categoryTable;
-                comboBoxCategory.DisplayMember = "CategoryName";
-                comboBoxCategory.ValueMember = "CategoryID";
-            }
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    string selectCategoriesQuery = "SELECT CategoryID, CategoryName FROM Categories";
+                    SqlDataAdapter categoryAdapter = new SqlDataAdapter(selectCategoriesQuery, connection);
+                    DataTable categoryTable = new DataTable();
+                    categoryAdapter.Fill(categoryTable);
+                    comboBoxCategory.DataSource = categoryTable;
+                    comboBoxCategory.DisplayMember = "CategoryName";
+                    comboBoxCategory.ValueMember = "CategoryID";
+                }
 
-            // Populate the product combo box
-            using (SqlConnection connection = new SqlConnection(connectionString))
+                // Populate the product combo box
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    string selectProductsQuery = "SELECT ProductID, ProductName FROM Products";
+                    SqlDataAdapter productAdapter = new SqlDataAdapter(selectProductsQuery, connection);
+                    DataTable productTable = new DataTable();
+                    productAdapter.Fill(productTable);
+                    ProductComboBox.DataSource = productTable;
+                    ProductComboBox.DisplayMember = "ProductName";
+                    ProductComboBox.ValueMember = "ProductID";
+                }
+            }
+            catch (Exception ex)
             {
-                connection.Open();
-                string selectProductsQuery = "SELECT ProductID, ProductName FROM Products";
-                SqlDataAdapter productAdapter = new SqlDataAdapter(selectProductsQuery, connection);
-                DataTable productTable = new DataTable();
-                productAdapter.Fill(productTable);
-                ProductComboBox.DataSource = productTable;
-                ProductComboBox.DisplayMember = "ProductName";
-                ProductComboBox.ValueMember = "ProductID";
+                MessageBox.Show("An error occurred: " + ex.Message);
+                logger.Error(ex, "Error loading categories and products.");
             }
         }
 
@@ -622,27 +689,35 @@ namespace RecipeGenius
 
             if (!string.IsNullOrEmpty(categoryName))
             {
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                try
                 {
-                    connection.Open();
-                    string insertCategoryQuery = "INSERT INTO Categories (CategoryName) VALUES (@CategoryName)";
-
-                    using (SqlCommand cmd = new SqlCommand(insertCategoryQuery, connection))
+                    using (SqlConnection connection = new SqlConnection(connectionString))
                     {
-                        cmd.Parameters.AddWithValue("@CategoryName", categoryName);
-                        int rowsAffected = cmd.ExecuteNonQuery();
+                        connection.Open();
+                        string insertCategoryQuery = "INSERT INTO Categories (CategoryName) VALUES (@CategoryName)";
 
-                        if (rowsAffected > 0)
+                        using (SqlCommand cmd = new SqlCommand(insertCategoryQuery, connection))
                         {
-                            MessageBox.Show("Category Saved Successfully!");
-                            newCategory.Text = ""; // Clear the TextBox
-                            LoadCategories();
-                        }
-                        else
-                        {
-                            MessageBox.Show("Failed to save the category.");
+                            cmd.Parameters.AddWithValue("@CategoryName", categoryName);
+                            int rowsAffected = cmd.ExecuteNonQuery();
+
+                            if (rowsAffected > 0)
+                            {
+                                MessageBox.Show("Category Saved Successfully!");
+                                newCategory.Text = ""; // Clear the TextBox
+                                LoadCategories();
+                            }
+                            else
+                            {
+                                MessageBox.Show("Failed to save the category.");
+                            }
                         }
                     }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("An error occurred: " + ex.Message);
+                    logger.Error(ex, "Error saving a category.");
                 }
             }
             else
@@ -659,68 +734,89 @@ namespace RecipeGenius
 
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    connection.Open();
-
-                    // Check for related recipes
-                    string checkRecipesQuery = "SELECT COUNT(*) FROM Recipes WHERE CategoryID = @CategoryID";
-                    SqlCommand checkRecipesCmd = new SqlCommand(checkRecipesQuery, connection);
-                    checkRecipesCmd.Parameters.AddWithValue("@CategoryID", categoryId);
-                    int recipeCount = (int)checkRecipesCmd.ExecuteScalar();
-
-                    // Check for related recipe ingredients
-                    string checkRecipeIngredientsQuery = "SELECT COUNT(*) FROM RecipeIngredients ri JOIN Recipes r ON ri.RecipeID = r.RecipeID WHERE r.CategoryID = @CategoryID";
-                    SqlCommand checkRecipeIngredientsCmd = new SqlCommand(checkRecipeIngredientsQuery, connection);
-                    checkRecipeIngredientsCmd.Parameters.AddWithValue("@CategoryID", categoryId);
-                    int recipeIngredientCount = (int)checkRecipeIngredientsCmd.ExecuteScalar();
-
-                    if (recipeCount > 0 || recipeIngredientCount > 0)
+                    try
                     {
-                        // Prompt the user for confirmation
-                        DialogResult result = MessageBox.Show("This category is associated with recipes and/or recipe ingredients. Deleting it will also delete related records. Do you want to proceed?", "Confirmation", MessageBoxButtons.YesNo);
-                        if (result == DialogResult.No)
+                        connection.Open();
+
+                        // Check for related recipes and recipe ingredients
+                        string checkRecipesQuery = "SELECT COUNT(*) FROM Recipes WHERE CategoryID = @CategoryID";
+                        SqlCommand checkRecipesCmd = new SqlCommand(checkRecipesQuery, connection);
+                        checkRecipesCmd.Parameters.AddWithValue("@CategoryID", categoryId);
+                        int recipeCount = (int)checkRecipesCmd.ExecuteScalar();
+
+                        string checkRecipeIngredientsQuery = "SELECT COUNT(*) FROM RecipeIngredients ri JOIN Recipes r ON ri.RecipeID = r.RecipeID WHERE r.CategoryID = @CategoryID";
+                        SqlCommand checkRecipeIngredientsCmd = new SqlCommand(checkRecipeIngredientsQuery, connection);
+                        checkRecipeIngredientsCmd.Parameters.AddWithValue("@CategoryID", categoryId);
+                        int recipeIngredientCount = (int)checkRecipeIngredientsCmd.ExecuteScalar();
+
+                        if (recipeCount > 0 || recipeIngredientCount > 0)
                         {
-                            return; // User canceled the deletion
+                            // Prompt the user for confirmation
+                            DialogResult result = MessageBox.Show("This category is associated with recipes and/or recipe ingredients. Deleting it will also delete related records. Do you want to proceed?", "Confirmation", MessageBoxButtons.YesNo);
+                            if (result == DialogResult.No)
+                            {
+                                return; // User canceled the deletion
+                            }
+                        }
+
+                        // If we reach here, it means the user confirmed the deletion
+                        using (SqlTransaction transaction = connection.BeginTransaction())
+                        {
+                            try
+                            {
+                                // First, delete related recipe ingredients
+                                string deleteRecipeIngredientsQuery = "DELETE FROM RecipeIngredients WHERE RecipeID IN (SELECT RecipeID FROM Recipes WHERE CategoryID = @CategoryID)";
+                                SqlCommand deleteRecipeIngredientsCmd = new SqlCommand(deleteRecipeIngredientsQuery, connection, transaction);
+                                deleteRecipeIngredientsCmd.Parameters.AddWithValue("@CategoryID", categoryId);
+                                deleteRecipeIngredientsCmd.ExecuteNonQuery();
+
+                                // Then, delete related recipes
+                                string deleteRecipesQuery = "DELETE FROM Recipes WHERE CategoryID = @CategoryID";
+                                SqlCommand deleteRecipesCmd = new SqlCommand(deleteRecipesQuery, connection, transaction);
+                                deleteRecipesCmd.Parameters.AddWithValue("@CategoryID", categoryId);
+                                deleteRecipesCmd.ExecuteNonQuery();
+
+                                // Finally, delete the category
+                                string deleteCategoryQuery = "DELETE FROM Categories WHERE CategoryID = @CategoryID";
+                                SqlCommand deleteCategoryCmd = new SqlCommand(deleteCategoryQuery, connection, transaction);
+                                deleteCategoryCmd.Parameters.AddWithValue("@CategoryID", categoryId);
+
+                                int rowsAffected = deleteCategoryCmd.ExecuteNonQuery();
+
+                                transaction.Commit(); // Commit the transaction
+
+                                if (rowsAffected > 0)
+                                {
+                                    MessageBox.Show("Category and related data Deleted Successfully!");
+                                    comboBoxCategory.DataSource = null; // Clear the combo box
+                                    LoadDataAsync();
+                                    LoadCategories();
+                                    // Repopulate the combo box to reflect the updated data
+                                    string selectCategoriesQuery = "SELECT CategoryID, CategoryName FROM Categories";
+                                    SqlDataAdapter categoryAdapter = new SqlDataAdapter(selectCategoriesQuery, connection);
+                                    DataTable categoryTable = new DataTable();
+                                    categoryAdapter.Fill(categoryTable);
+                                    comboBoxCategory.DataSource = categoryTable;
+                                    comboBoxCategory.DisplayMember = "CategoryName";
+                                    comboBoxCategory.ValueMember = "CategoryID";
+                                }
+                                else
+                                {
+                                    MessageBox.Show("Failed to delete the category.");
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                transaction.Rollback(); // Rollback the transaction
+                                MessageBox.Show("Failed to delete the category. Please try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                logger.Error(ex, "Error deleting the category and related data.");
+                            }
                         }
                     }
-
-                    // If we reach here, it means the user confirmed the deletion
-                    // First, delete related recipe ingredients
-                    string deleteRecipeIngredientsQuery = "DELETE FROM RecipeIngredients WHERE RecipeID IN (SELECT RecipeID FROM Recipes WHERE CategoryID = @CategoryID)";
-                    SqlCommand deleteRecipeIngredientsCmd = new SqlCommand(deleteRecipeIngredientsQuery, connection);
-                    deleteRecipeIngredientsCmd.Parameters.AddWithValue("@CategoryID", categoryId);
-                    deleteRecipeIngredientsCmd.ExecuteNonQuery();
-
-                    // Then, delete related recipes
-                    string deleteRecipesQuery = "DELETE FROM Recipes WHERE CategoryID = @CategoryID";
-                    SqlCommand deleteRecipesCmd = new SqlCommand(deleteRecipesQuery, connection);
-                    deleteRecipesCmd.Parameters.AddWithValue("@CategoryID", categoryId);
-                    deleteRecipesCmd.ExecuteNonQuery();
-
-                    // Finally, delete the category
-                    string deleteCategoryQuery = "DELETE FROM Categories WHERE CategoryID = @CategoryID";
-                    SqlCommand deleteCategoryCmd = new SqlCommand(deleteCategoryQuery, connection);
-                    deleteCategoryCmd.Parameters.AddWithValue("@CategoryID", categoryId);
-
-                    int rowsAffected = deleteCategoryCmd.ExecuteNonQuery();
-
-                    if (rowsAffected > 0)
+                    catch (Exception ex)
                     {
-                        MessageBox.Show("Category and related data Deleted Successfully!");
-                        comboBoxCategory.DataSource = null; // Clear the combo box
-                        LoadDataAsync();
-                        LoadCategories();
-                        // Repopulate the combo box to reflect the updated data
-                        string selectCategoriesQuery = "SELECT CategoryID, CategoryName FROM Categories";
-                        SqlDataAdapter categoryAdapter = new SqlDataAdapter(selectCategoriesQuery, connection);
-                        DataTable categoryTable = new DataTable();
-                        categoryAdapter.Fill(categoryTable);
-                        comboBoxCategory.DataSource = categoryTable;
-                        comboBoxCategory.DisplayMember = "CategoryName";
-                        comboBoxCategory.ValueMember = "CategoryID";
-                    }
-                    else
-                    {
-                        MessageBox.Show("Failed to delete the category.");
+                        MessageBox.Show("An error occurred: " + ex.Message);
+                        logger.Error(ex, "Error while attempting to delete the category.");
                     }
                 }
             }
@@ -743,15 +839,14 @@ namespace RecipeGenius
         {
             string searchText = searchTextBox.Text;
 
-            // Implement autocomplete logic here
             if (!string.IsNullOrWhiteSpace(searchText))
             {
-                // Call a method to perform the autocomplete search
+                // Perform autocomplete search when there is input
                 PerformAutocompleteSearch(searchText);
             }
             else
             {
-                // If the search text is empty, reload all recipes
+                // Reload all recipes when the search text is empty
                 LoadDataAsync();
             }
         }
@@ -774,47 +869,59 @@ namespace RecipeGenius
             }
             catch (Exception ex)
             {
-                // Handle exceptions here
-                MessageBox.Show("An error occurred: " + ex.Message);
-                logger.Error(ex, "An error occurred during autocomplete search.");
+                // Handle exceptions by showing a user-friendly message and logging the error.
+                string errorMessage = "An error occurred during autocomplete search.";
+                MessageBox.Show("An error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                logger.Error(ex, errorMessage);
             }
         }
         private async Task<List<Recipe>> SearchRecipesInDatabaseAsync(string searchText)
         {
             List<Recipe> searchResults = new List<Recipe>();
 
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            try
             {
-                await connection.OpenAsync();
-
-                // SQL query to select recipes based on title and category
-                string sqlQuery = "SELECT r.RecipeID, r.Title, r.ImagePath, r.CategoryID " +
-                                  "FROM Recipes r " +
-                                  "JOIN Categories c ON r.CategoryID = c.CategoryID " +
-                                  "WHERE r.Title LIKE @searchText OR c.CategoryName LIKE @searchText";
-
-                using (SqlCommand command = new SqlCommand(sqlQuery, connection))
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    command.Parameters.AddWithValue("@searchText", "%" + searchText + "%");
+                    await connection.OpenAsync();
 
-                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    // SQL query to select recipes based on title and category
+                    string sqlQuery = "SELECT r.RecipeID, r.Title, r.ImagePath, r.CategoryID " +
+                                      "FROM Recipes r " +
+                                      "JOIN Categories c ON r.CategoryID = c.CategoryID " +
+                                      "WHERE r.Title LIKE @searchText OR c.CategoryName LIKE @searchText";
+
+                    using (SqlCommand command = new SqlCommand(sqlQuery, connection))
                     {
-                        while (await reader.ReadAsync())
-                        {
-                            int recipeID = reader.GetInt32(0);
-                            string title = reader.GetString(1);
-                            string imagePath = reader.GetString(2);
-                            int categoryID = reader.GetInt32(3);
+                        command.Parameters.AddWithValue("@searchText", "%" + searchText + "%");
 
-                            Recipe recipe = new Recipe(recipeID, title, string.Empty, categoryID, "", imagePath, new List<RecipeIngredients>());
-                            searchResults.Add(recipe);
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                int recipeID = reader.GetInt32(0);
+                                string title = reader.GetString(1);
+                                string imagePath = reader.GetString(2);
+                                int categoryID = reader.GetInt32(3);
+
+                                Recipe recipe = new Recipe(recipeID, title, string.Empty, categoryID, "", imagePath, new List<RecipeIngredients>());
+                                searchResults.Add(recipe);
+                            }
                         }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                // Handle exceptions by showing a user-friendly message and logging the error.
+                string errorMessage = "An error occurred during recipe search.";
+                MessageBox.Show("An error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                logger.Error(ex, errorMessage);
+            }
 
             return searchResults;
         }
+
 
     }
 }
