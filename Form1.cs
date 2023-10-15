@@ -7,12 +7,9 @@ namespace RecipeGenius
     public partial class Form1 : Form
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+     
 
         string connectionString = "Data Source=Alvin-AB\\SQLEXPRESS;Initial Catalog=RecipeGenius;Integrated Security=True";
-
-
-
-
 
         public Form1()
         {
@@ -20,7 +17,6 @@ namespace RecipeGenius
             LoadDataAsync();
 
         }
-
 
         private async Task LoadDataAsync()
         {
@@ -120,7 +116,7 @@ namespace RecipeGenius
                         else
                         {
                             // User is not an admin or login failed
-                            MessageBox.Show("Login failed. Please check your credentials.");
+                            //MessageBox.Show("Login failed. Please check your credentials.");
                             logger.Error("Login failed for username: " + username);
                         }
                     }
