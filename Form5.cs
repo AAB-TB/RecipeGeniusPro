@@ -608,6 +608,16 @@ namespace RecipeGenius
                     using (SqlConnection connection = new SqlConnection(connectionString))
                     {
                         connection.Open();
+
+                        // Delete associated records in RecipeIngredients first
+                        string deleteRecipeIngredientsQuery = "DELETE FROM RecipeIngredients WHERE ProductID = @ProductID";
+                        using (SqlCommand deleteRecipeIngredientsCmd = new SqlCommand(deleteRecipeIngredientsQuery, connection))
+                        {
+                            deleteRecipeIngredientsCmd.Parameters.AddWithValue("@ProductID", productId);
+                            deleteRecipeIngredientsCmd.ExecuteNonQuery();
+                        }
+
+                        // Delete the product after associated records are deleted
                         string deleteProductQuery = "DELETE FROM Products WHERE ProductID = @ProductID";
                         SqlCommand cmd = new SqlCommand(deleteProductQuery, connection);
                         cmd.Parameters.AddWithValue("@ProductID", productId);
