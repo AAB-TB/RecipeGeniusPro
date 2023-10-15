@@ -728,5 +728,83 @@ namespace RecipeGenius
                 dataGridViewIngredients.Rows.RemoveAt(lastIndex); // Remove the last row
             }
         }
+
+        private void searchTextBox_TextChanged(object sender, EventArgs e)
+        {
+            string searchText = searchTextBox.Text;
+
+            // Implement autocomplete logic here
+            if (!string.IsNullOrWhiteSpace(searchText))
+            {
+                // Call a method to perform the autocomplete search
+                PerformAutocompleteSearch(searchText);
+            }
+            else
+            {
+                // If the search text is empty, reload all recipes
+                LoadDataAsync();
+            }
+        }
+        private async void PerformAutocompleteSearch(string searchText)
+        {
+            try
+            {
+                List<Recipe> searchResults = await SearchRecipesInDatabaseAsync(searchText);
+
+                // Clear existing user controls in the FlowLayoutPanel.
+                flowLayoutPanel1.Controls.Clear();
+
+                foreach (Recipe data in searchResults)
+                {
+                    RecipeUserControl recipeUserControl = new RecipeUserControl(this, data, false);
+                    recipeUserControl.SetImage(data.ImagePath);
+                    recipeUserControl.SetTitle(data.Title);
+                    flowLayoutPanel1.Controls.Add(recipeUserControl);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions here
+                MessageBox.Show("An error occurred: " + ex.Message);
+                logger.Error(ex, "An error occurred during autocomplete search.");
+            }
+        }
+        private async Task<List<Recipe>> SearchRecipesInDatabaseAsync(string searchText)
+        {
+            List<Recipe> searchResults = new List<Recipe>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                await connection.OpenAsync();
+
+                // SQL query to select recipes based on title and category
+                string sqlQuery = "SELECT r.RecipeID, r.Title, r.ImagePath, r.CategoryID " +
+                                  "FROM Recipes r " +
+                                  "JOIN Categories c ON r.CategoryID = c.CategoryID " +
+                                  "WHERE r.Title LIKE @searchText OR c.CategoryName LIKE @searchText";
+
+                using (SqlCommand command = new SqlCommand(sqlQuery, connection))
+                {
+                    command.Parameters.AddWithValue("@searchText", "%" + searchText + "%");
+
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            int recipeID = reader.GetInt32(0);
+                            string title = reader.GetString(1);
+                            string imagePath = reader.GetString(2);
+                            int categoryID = reader.GetInt32(3);
+
+                            Recipe recipe = new Recipe(recipeID, title, string.Empty, categoryID, "", imagePath, new List<RecipeIngredients>());
+                            searchResults.Add(recipe);
+                        }
+                    }
+                }
+            }
+
+            return searchResults;
+        }
+
     }
 }

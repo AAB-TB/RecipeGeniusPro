@@ -202,11 +202,11 @@
             searchTextBox.Font = new Font("Algerian", 13.8F, FontStyle.Italic, GraphicsUnit.Point);
             searchTextBox.ForeColor = Color.DarkGreen;
             searchTextBox.Location = new Point(282, 62);
-            searchTextBox.Multiline = true;
             searchTextBox.Name = "searchTextBox";
             searchTextBox.PlaceholderText = "Find Your recipe";
-            searchTextBox.Size = new Size(598, 59);
+            searchTextBox.Size = new Size(598, 38);
             searchTextBox.TabIndex = 6;
+            searchTextBox.TextChanged += searchTextBox_TextChanged;
             // 
             // tabPage1
             // 
