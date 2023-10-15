@@ -34,6 +34,7 @@
             aboutBtn = new Button();
             homeBtn = new Button();
             pictureBox1 = new PictureBox();
+            suggestionsListBox = new ListBox();
             flowLayoutPanel1 = new FlowLayoutPanel();
             searchTextBox = new TextBox();
             label1 = new Label();
@@ -64,6 +65,7 @@
             // splitContainer1.Panel2
             // 
             splitContainer1.Panel2.BackColor = SystemColors.ControlLightLight;
+            splitContainer1.Panel2.Controls.Add(suggestionsListBox);
             splitContainer1.Panel2.Controls.Add(flowLayoutPanel1);
             splitContainer1.Panel2.Controls.Add(searchTextBox);
             splitContainer1.Panel2.Controls.Add(label1);
@@ -121,24 +123,38 @@
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
             // 
+            // suggestionsListBox
+            // 
+            suggestionsListBox.BackColor = SystemColors.GradientActiveCaption;
+            suggestionsListBox.Font = new Font("Algerian", 13.8F, FontStyle.Italic, GraphicsUnit.Point);
+            suggestionsListBox.ForeColor = Color.DarkGreen;
+            suggestionsListBox.FormattingEnabled = true;
+            suggestionsListBox.ItemHeight = 25;
+            suggestionsListBox.Location = new Point(249, 210);
+            suggestionsListBox.Name = "suggestionsListBox";
+            suggestionsListBox.Size = new Size(598, 79);
+            suggestionsListBox.TabIndex = 6;
+            suggestionsListBox.Visible = false;
+            suggestionsListBox.SelectedIndexChanged += suggestionsListBox_SelectedIndexChanged_1;
+            // 
             // flowLayoutPanel1
             // 
             flowLayoutPanel1.AutoScroll = true;
-            flowLayoutPanel1.Location = new Point(31, 274);
+            flowLayoutPanel1.Location = new Point(31, 320);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(1131, 597);
+            flowLayoutPanel1.Size = new Size(1131, 551);
             flowLayoutPanel1.TabIndex = 5;
             // 
             // searchTextBox
             // 
             searchTextBox.Font = new Font("Algerian", 13.8F, FontStyle.Italic, GraphicsUnit.Point);
             searchTextBox.ForeColor = Color.DarkGreen;
-            searchTextBox.Location = new Point(258, 179);
-            searchTextBox.Multiline = true;
+            searchTextBox.Location = new Point(249, 169);
             searchTextBox.Name = "searchTextBox";
             searchTextBox.PlaceholderText = "Find Your recipe";
-            searchTextBox.Size = new Size(598, 59);
+            searchTextBox.Size = new Size(598, 38);
             searchTextBox.TabIndex = 4;
+            searchTextBox.TextChanged += searchTextBox_TextChanged;
             // 
             // label1
             // 
@@ -214,5 +230,6 @@
         private TextBox searchTextBox;
         private Button productsBtn;
         private FlowLayoutPanel flowLayoutPanel1;
+        private ListBox suggestionsListBox;
     }
 }

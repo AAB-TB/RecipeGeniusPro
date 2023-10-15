@@ -47,7 +47,7 @@ namespace RecipeGenius
             recipeTitle.Text = title;
         }
 
-
+        
         private void pictureBox1_Click(object sender, EventArgs e)
         {
            
