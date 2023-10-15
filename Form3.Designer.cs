@@ -130,8 +130,8 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1372, 898);
             Controls.Add(splitContainer1);
+            MaximizeBox = false;
             Name = "Form3";
-            Text = "Form3";
             splitContainer1.Panel1.ResumeLayout(false);
             splitContainer1.Panel2.ResumeLayout(false);
             splitContainer1.Panel2.PerformLayout();

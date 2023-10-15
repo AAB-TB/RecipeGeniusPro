@@ -129,8 +129,8 @@
             BackColor = Color.White;
             ClientSize = new Size(1372, 898);
             Controls.Add(splitContainer1);
+            MaximizeBox = false;
             Name = "Form4";
-            Text = "Form4";
             splitContainer1.Panel1.ResumeLayout(false);
             splitContainer1.Panel2.ResumeLayout(false);
             splitContainer1.Panel2.PerformLayout();
