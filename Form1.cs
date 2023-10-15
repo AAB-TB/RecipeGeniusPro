@@ -163,8 +163,8 @@ namespace RecipeGenius
             }
             else
             {
-                // If the search text is empty, hide the ListBox
-                suggestionsListBox.Visible = false;
+
+                LoadDataAsync();
             }
         }
 
@@ -236,24 +236,13 @@ namespace RecipeGenius
             return suggestions;
         }
 
-        private void suggestionsListBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (suggestionsListBox.SelectedIndex != -1)
-            {
-                string selectedSuggestion = suggestionsListBox.SelectedItem.ToString();
-                // Perform the search based on the selected suggestion
-                PerformSearch(selectedSuggestion);
-                // Clear the search text and hide the suggestions
-                searchTextBox.Text = string.Empty;
-                suggestionsListBox.Visible = false;
-            }
-        }
+
         private async void PerformSearch(string selectedSuggestion)
         {
             try
             {
                 List<Recipe> searchResults = await SearchRecipesAsync(selectedSuggestion);
-
+                suggestionsListBox.Visible = false;
                 // Clear existing user controls in the FlowLayoutPanel.
                 flowLayoutPanel1.Controls.Clear();
 
@@ -264,6 +253,7 @@ namespace RecipeGenius
                     recipeUserControl.SetTitle(data.Title);
                     flowLayoutPanel1.Controls.Add(recipeUserControl);
                 }
+               
             }
             catch (Exception ex)
             {
@@ -310,6 +300,23 @@ namespace RecipeGenius
             return searchResults;
         }
 
+
+
+        private void suggestionsListBox_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+            if (suggestionsListBox.SelectedIndex != -1)
+            {
+                string selectedSuggestion = suggestionsListBox.SelectedItem.ToString();
+                // Set the selected suggestion as the text in the searchTextBox
+                searchTextBox.Text = selectedSuggestion;
+                // Perform the search based on the selected suggestion
+                PerformSearch(selectedSuggestion);
+
+                // Explicitly hide the suggestionsListBox
+                suggestionsListBox.Visible = false;
+            }
+
+        }
     }
 
 }

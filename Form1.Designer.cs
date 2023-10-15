@@ -125,18 +125,17 @@
             // 
             // suggestionsListBox
             // 
-            suggestionsListBox.BackColor = SystemColors.GradientInactiveCaption;
-            suggestionsListBox.BorderStyle = BorderStyle.FixedSingle;
+            suggestionsListBox.BackColor = SystemColors.GradientActiveCaption;
             suggestionsListBox.Font = new Font("Algerian", 13.8F, FontStyle.Italic, GraphicsUnit.Point);
             suggestionsListBox.ForeColor = Color.DarkGreen;
             suggestionsListBox.FormattingEnabled = true;
             suggestionsListBox.ItemHeight = 25;
-            suggestionsListBox.Location = new Point(249, 213);
+            suggestionsListBox.Location = new Point(249, 210);
             suggestionsListBox.Name = "suggestionsListBox";
-            suggestionsListBox.Size = new Size(598, 102);
+            suggestionsListBox.Size = new Size(598, 79);
             suggestionsListBox.TabIndex = 6;
             suggestionsListBox.Visible = false;
-            suggestionsListBox.SelectedIndexChanged += suggestionsListBox_SelectedIndexChanged;
+            suggestionsListBox.SelectedIndexChanged += suggestionsListBox_SelectedIndexChanged_1;
             // 
             // flowLayoutPanel1
             // 
