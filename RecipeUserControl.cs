@@ -47,11 +47,11 @@ namespace RecipeGenius
             recipeTitle.Text = title;
         }
 
-        
+
         private void pictureBox1_Click(object sender, EventArgs e)
         {
-           
-            
+
+
 
             int recipeID = recipe.RecipeID;
 
@@ -64,7 +64,7 @@ namespace RecipeGenius
                 form5.OpenTabPage1();
 
                 form5.Show();
-                
+
             }
             else
             {

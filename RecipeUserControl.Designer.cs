@@ -36,6 +36,7 @@
             // pictureBox1
             // 
             pictureBox1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            pictureBox1.BackColor = Color.White;
             pictureBox1.BackgroundImageLayout = ImageLayout.Stretch;
             pictureBox1.BorderStyle = BorderStyle.Fixed3D;
             pictureBox1.Location = new Point(15, 16);
@@ -50,7 +51,7 @@
             // 
             recipeTitle.BackColor = Color.White;
             recipeTitle.BorderStyle = BorderStyle.None;
-            recipeTitle.Font = new Font("Algerian", 10.2F, FontStyle.Bold, GraphicsUnit.Point);
+            recipeTitle.Font = new Font("Sylfaen", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             recipeTitle.ForeColor = Color.DarkGreen;
             recipeTitle.Location = new Point(15, 237);
             recipeTitle.Multiline = true;
@@ -64,6 +65,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.White;
             BorderStyle = BorderStyle.Fixed3D;
             Controls.Add(recipeTitle);
             Controls.Add(pictureBox1);
