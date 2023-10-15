@@ -78,7 +78,7 @@
             // 
             // productsBtn
             // 
-            productsBtn.Font = new Font("Algerian", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
+            productsBtn.Font = new Font("Sylfaen", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             productsBtn.ForeColor = Color.DarkGreen;
             productsBtn.Location = new Point(19, 546);
             productsBtn.Name = "productsBtn";
@@ -90,7 +90,7 @@
             // 
             // aboutBtn
             // 
-            aboutBtn.Font = new Font("Algerian", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
+            aboutBtn.Font = new Font("Sylfaen", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             aboutBtn.ForeColor = Color.DarkGreen;
             aboutBtn.Location = new Point(19, 791);
             aboutBtn.Name = "aboutBtn";
@@ -113,7 +113,7 @@
             // 
             // homeBtn
             // 
-            homeBtn.Font = new Font("Algerian", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
+            homeBtn.Font = new Font("Sylfaen", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             homeBtn.ForeColor = Color.DarkGreen;
             homeBtn.Location = new Point(19, 325);
             homeBtn.Name = "homeBtn";
@@ -126,82 +126,86 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Font = new Font("Algerian", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
+            label3.Font = new Font("Sylfaen", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             label3.ForeColor = Color.DarkGreen;
-            label3.Location = new Point(504, 148);
+            label3.Location = new Point(25, 512);
             label3.Name = "label3";
-            label3.Size = new Size(164, 25);
+            label3.Size = new Size(134, 29);
             label3.TabIndex = 15;
             label3.Text = "Ingredients";
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Font = new Font("Algerian", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
+            label2.Font = new Font("Sylfaen", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             label2.ForeColor = Color.DarkGreen;
-            label2.Location = new Point(120, 152);
+            label2.Location = new Point(25, 77);
             label2.Name = "label2";
-            label2.Size = new Size(174, 25);
+            label2.Size = new Size(141, 29);
             label2.TabIndex = 14;
             label2.Text = "Instructions";
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.BackColor = Color.LightSalmon;
-            label1.Font = new Font("Algerian", 16.2F, FontStyle.Bold, GraphicsUnit.Point);
+            label1.BackColor = Color.WhiteSmoke;
+            label1.Font = new Font("Sylfaen", 18F, FontStyle.Bold, GraphicsUnit.Point);
             label1.ForeColor = Color.DarkGreen;
-            label1.Location = new Point(268, 42);
+            label1.Location = new Point(165, 29);
             label1.Name = "label1";
-            label1.Size = new Size(123, 31);
+            label1.Size = new Size(99, 39);
             label1.TabIndex = 12;
             label1.Text = "label1";
             // 
             // cookingTimeBox
             // 
-            cookingTimeBox.BackColor = Color.LightSalmon;
+            cookingTimeBox.BackColor = Color.WhiteSmoke;
             cookingTimeBox.Font = new Font("Algerian", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             cookingTimeBox.ForeColor = Color.DarkGreen;
-            cookingTimeBox.Location = new Point(807, 43);
+            cookingTimeBox.Location = new Point(651, 41);
             cookingTimeBox.Multiline = true;
             cookingTimeBox.Name = "cookingTimeBox";
             cookingTimeBox.ReadOnly = true;
-            cookingTimeBox.Size = new Size(298, 56);
+            cookingTimeBox.Size = new Size(186, 34);
             cookingTimeBox.TabIndex = 11;
             cookingTimeBox.TabStop = false;
             // 
             // IngredientsBox
             // 
-            IngredientsBox.BackColor = Color.LightSalmon;
-            IngredientsBox.Font = new Font("Algerian", 12F, FontStyle.Bold, GraphicsUnit.Point);
+            IngredientsBox.BackColor = Color.WhiteSmoke;
+            IngredientsBox.BorderStyle = BorderStyle.None;
+            IngredientsBox.Font = new Font("Sylfaen", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             IngredientsBox.ForeColor = Color.DarkGreen;
-            IngredientsBox.Location = new Point(426, 176);
+            IngredientsBox.Location = new Point(25, 540);
             IngredientsBox.Multiline = true;
             IngredientsBox.Name = "IngredientsBox";
             IngredientsBox.ReadOnly = true;
-            IngredientsBox.Size = new Size(332, 656);
+            IngredientsBox.ScrollBars = ScrollBars.Vertical;
+            IngredientsBox.Size = new Size(607, 346);
             IngredientsBox.TabIndex = 10;
             IngredientsBox.TabStop = false;
             // 
             // descriptionbox
             // 
-            descriptionbox.BackColor = Color.LightSalmon;
-            descriptionbox.Font = new Font("Algerian", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
-            descriptionbox.ForeColor = Color.DarkOliveGreen;
-            descriptionbox.Location = new Point(31, 180);
+            descriptionbox.BackColor = Color.WhiteSmoke;
+            descriptionbox.BorderStyle = BorderStyle.None;
+            descriptionbox.Font = new Font("Sylfaen", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
+            descriptionbox.ForeColor = Color.DarkGreen;
+            descriptionbox.Location = new Point(25, 105);
             descriptionbox.Multiline = true;
             descriptionbox.Name = "descriptionbox";
             descriptionbox.ReadOnly = true;
-            descriptionbox.Size = new Size(370, 656);
+            descriptionbox.ScrollBars = ScrollBars.Vertical;
+            descriptionbox.Size = new Size(607, 404);
             descriptionbox.TabIndex = 9;
             descriptionbox.TabStop = false;
             // 
             // pictureBox1
             // 
             pictureBox1.BorderStyle = BorderStyle.Fixed3D;
-            pictureBox1.Location = new Point(784, 176);
+            pictureBox1.Location = new Point(651, 77);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(358, 656);
+            pictureBox1.Size = new Size(505, 809);
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBox1.TabIndex = 8;
             pictureBox1.TabStop = false;

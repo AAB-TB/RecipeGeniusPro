@@ -18,7 +18,7 @@ namespace RecipeGenius
         string connectionString = "Data Source=Alvin-AB\\SQLEXPRESS;Initial Catalog=RecipeGenius;Integrated Security=True";
         public Form4()
         {
-            
+
             InitializeComponent();
             LoadProductsDetails();
         }

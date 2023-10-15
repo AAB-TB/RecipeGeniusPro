@@ -78,7 +78,7 @@
             // 
             // productsBtn
             // 
-            productsBtn.Font = new Font("Algerian", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
+            productsBtn.Font = new Font("Sylfaen", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             productsBtn.ForeColor = Color.DarkGreen;
             productsBtn.Location = new Point(12, 516);
             productsBtn.Name = "productsBtn";
@@ -90,7 +90,7 @@
             // 
             // aboutBtn
             // 
-            aboutBtn.Font = new Font("Algerian", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
+            aboutBtn.Font = new Font("Sylfaen", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             aboutBtn.ForeColor = Color.DarkGreen;
             aboutBtn.Location = new Point(12, 743);
             aboutBtn.Name = "aboutBtn";
@@ -102,7 +102,7 @@
             // 
             // homeBtn
             // 
-            homeBtn.Font = new Font("Algerian", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
+            homeBtn.Font = new Font("Sylfaen", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             homeBtn.ForeColor = Color.DarkGreen;
             homeBtn.Location = new Point(12, 295);
             homeBtn.Name = "homeBtn";
@@ -126,13 +126,13 @@
             // suggestionsListBox
             // 
             suggestionsListBox.BackColor = SystemColors.GradientActiveCaption;
-            suggestionsListBox.Font = new Font("Algerian", 13.8F, FontStyle.Italic, GraphicsUnit.Point);
+            suggestionsListBox.Font = new Font("Sylfaen", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             suggestionsListBox.ForeColor = Color.DarkGreen;
             suggestionsListBox.FormattingEnabled = true;
-            suggestionsListBox.ItemHeight = 25;
+            suggestionsListBox.ItemHeight = 29;
             suggestionsListBox.Location = new Point(249, 210);
             suggestionsListBox.Name = "suggestionsListBox";
-            suggestionsListBox.Size = new Size(598, 79);
+            suggestionsListBox.Size = new Size(598, 62);
             suggestionsListBox.TabIndex = 6;
             suggestionsListBox.Visible = false;
             suggestionsListBox.SelectedIndexChanged += suggestionsListBox_SelectedIndexChanged_1;
@@ -147,7 +147,7 @@
             // 
             // searchTextBox
             // 
-            searchTextBox.Font = new Font("Algerian", 13.8F, FontStyle.Italic, GraphicsUnit.Point);
+            searchTextBox.Font = new Font("Sylfaen", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             searchTextBox.ForeColor = Color.DarkGreen;
             searchTextBox.Location = new Point(249, 169);
             searchTextBox.Name = "searchTextBox";
@@ -159,13 +159,13 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Font = new Font("Algerian", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
+            label1.Font = new Font("Sylfaen", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             label1.ForeColor = Color.DarkGreen;
-            label1.Location = new Point(204, 101);
+            label1.Location = new Point(42, 108);
             label1.Name = "label1";
-            label1.Size = new Size(677, 75);
+            label1.Size = new Size(1026, 58);
             label1.TabIndex = 3;
-            label1.Text = "Discover the finest meat, sea food, fresh sallads, \r\n  soul-warming soups, and irresistible dessearts.\r\n\r\n";
+            label1.Text = "Discover the finest meat, sea food, fresh sallads, soul-warming soups, and irresistible dessearts.\r\n\r\n";
             // 
             // adminloginBtn
             // 
@@ -181,7 +181,7 @@
             // 
             // PasswordtxtBox
             // 
-            PasswordtxtBox.Font = new Font("Algerian", 13.8F, FontStyle.Italic, GraphicsUnit.Point);
+            PasswordtxtBox.Font = new Font("Sylfaen", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             PasswordtxtBox.ForeColor = Color.DarkGreen;
             PasswordtxtBox.Location = new Point(424, 34);
             PasswordtxtBox.Name = "PasswordtxtBox";
@@ -192,7 +192,7 @@
             // 
             // usernametxtBox
             // 
-            usernametxtBox.Font = new Font("Algerian", 13.8F, FontStyle.Italic, GraphicsUnit.Point);
+            usernametxtBox.Font = new Font("Sylfaen", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             usernametxtBox.ForeColor = Color.DarkGreen;
             usernametxtBox.Location = new Point(65, 34);
             usernametxtBox.Name = "usernametxtBox";

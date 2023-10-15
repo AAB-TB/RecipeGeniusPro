@@ -30,11 +30,11 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form3));
             splitContainer1 = new SplitContainer();
+            productsBtn = new Button();
             homeBtn = new Button();
             pictureBox1 = new PictureBox();
             label1 = new Label();
             textBox1 = new TextBox();
-            productsBtn = new Button();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -64,9 +64,21 @@
             splitContainer1.SplitterDistance = 273;
             splitContainer1.TabIndex = 0;
             // 
+            // productsBtn
+            // 
+            productsBtn.Font = new Font("Sylfaen", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
+            productsBtn.ForeColor = Color.DarkGreen;
+            productsBtn.Location = new Point(22, 529);
+            productsBtn.Name = "productsBtn";
+            productsBtn.Size = new Size(227, 41);
+            productsBtn.TabIndex = 17;
+            productsBtn.Text = "Our products";
+            productsBtn.UseVisualStyleBackColor = true;
+            productsBtn.Click += productsBtn_Click;
+            // 
             // homeBtn
             // 
-            homeBtn.Font = new Font("Algerian", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
+            homeBtn.Font = new Font("Sylfaen", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             homeBtn.ForeColor = Color.DarkGreen;
             homeBtn.Location = new Point(22, 296);
             homeBtn.Name = "homeBtn";
@@ -90,19 +102,19 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.BackColor = Color.LightSalmon;
-            label1.Font = new Font("Algerian", 16.2F, FontStyle.Bold, GraphicsUnit.Point);
+            label1.BackColor = Color.WhiteSmoke;
+            label1.Font = new Font("Sylfaen", 19.8000011F, FontStyle.Bold, GraphicsUnit.Point);
             label1.ForeColor = Color.DarkGreen;
             label1.Location = new Point(321, 38);
             label1.Name = "label1";
-            label1.Size = new Size(364, 31);
+            label1.Size = new Size(359, 44);
             label1.TabIndex = 13;
             label1.Text = "International Food AB";
             // 
             // textBox1
             // 
-            textBox1.BackColor = Color.LightSalmon;
-            textBox1.Font = new Font("Algerian", 13.8F, FontStyle.Italic, GraphicsUnit.Point);
+            textBox1.BackColor = Color.WhiteSmoke;
+            textBox1.Font = new Font("Sylfaen", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             textBox1.ForeColor = Color.DarkGreen;
             textBox1.Location = new Point(70, 83);
             textBox1.Multiline = true;
@@ -111,18 +123,6 @@
             textBox1.Size = new Size(964, 736);
             textBox1.TabIndex = 0;
             textBox1.Text = resources.GetString("textBox1.Text");
-            // 
-            // productsBtn
-            // 
-            productsBtn.Font = new Font("Algerian", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
-            productsBtn.ForeColor = Color.DarkGreen;
-            productsBtn.Location = new Point(22, 529);
-            productsBtn.Name = "productsBtn";
-            productsBtn.Size = new Size(227, 41);
-            productsBtn.TabIndex = 17;
-            productsBtn.Text = "Our products";
-            productsBtn.UseVisualStyleBackColor = true;
-            productsBtn.Click += productsBtn_Click;
             // 
             // Form3
             // 

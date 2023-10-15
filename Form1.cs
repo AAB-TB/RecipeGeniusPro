@@ -7,7 +7,7 @@ namespace RecipeGenius
     public partial class Form1 : Form
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-     
+
 
         string connectionString = "Data Source=Alvin-AB\\SQLEXPRESS;Initial Catalog=RecipeGenius;Integrated Security=True";
 
@@ -81,7 +81,7 @@ namespace RecipeGenius
             {
                 // Log detailed error information using NLog
                 logger.Error(ex, "An error occurred in the RetrieveDataFromDatabaseAsync method. Message: {0}", ex.Message);
-                
+
             }
 
             return recipeDataList;

@@ -103,7 +103,7 @@
             // 
             // btnDeleteRecipe
             // 
-            btnDeleteRecipe.Font = new Font("Algerian", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
+            btnDeleteRecipe.Font = new Font("Sylfaen", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             btnDeleteRecipe.ForeColor = Color.DarkGreen;
             btnDeleteRecipe.Location = new Point(12, 674);
             btnDeleteRecipe.Name = "btnDeleteRecipe";
@@ -115,7 +115,7 @@
             // 
             // updateBtn
             // 
-            updateBtn.Font = new Font("Algerian", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
+            updateBtn.Font = new Font("Sylfaen", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             updateBtn.ForeColor = Color.DarkGreen;
             updateBtn.Location = new Point(12, 537);
             updateBtn.Name = "updateBtn";
@@ -127,7 +127,7 @@
             // 
             // btnSaveRecipe
             // 
-            btnSaveRecipe.Font = new Font("Algerian", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
+            btnSaveRecipe.Font = new Font("Sylfaen", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             btnSaveRecipe.ForeColor = Color.DarkGreen;
             btnSaveRecipe.Location = new Point(12, 411);
             btnSaveRecipe.Name = "btnSaveRecipe";
@@ -139,7 +139,7 @@
             // 
             // homeBtn
             // 
-            homeBtn.Font = new Font("Algerian", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
+            homeBtn.Font = new Font("Sylfaen", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             homeBtn.ForeColor = Color.DarkGreen;
             homeBtn.Location = new Point(12, 280);
             homeBtn.Name = "homeBtn";
@@ -199,7 +199,7 @@
             // 
             // searchTextBox
             // 
-            searchTextBox.Font = new Font("Algerian", 13.8F, FontStyle.Italic, GraphicsUnit.Point);
+            searchTextBox.Font = new Font("Sylfaen", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             searchTextBox.ForeColor = Color.DarkGreen;
             searchTextBox.Location = new Point(282, 62);
             searchTextBox.Name = "searchTextBox";
@@ -259,8 +259,10 @@
             dataGridViewIngredients.AllowDrop = true;
             dataGridViewIngredients.AllowUserToAddRows = false;
             dataGridViewIngredients.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridViewIngredients.BackgroundColor = Color.White;
             dataGridViewIngredients.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewIngredients.Columns.AddRange(new DataGridViewColumn[] { ProductList, QuantityBox });
+            dataGridViewIngredients.GridColor = Color.White;
             dataGridViewIngredients.Location = new Point(545, 432);
             dataGridViewIngredients.Name = "dataGridViewIngredients";
             dataGridViewIngredients.RowHeadersWidth = 51;
@@ -282,19 +284,19 @@
             // 
             // categoryComboBox
             // 
-            categoryComboBox.Font = new Font("Algerian", 16.2F, FontStyle.Bold, GraphicsUnit.Point);
+            categoryComboBox.Font = new Font("Sylfaen", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             categoryComboBox.ForeColor = Color.DarkGreen;
             categoryComboBox.FormattingEnabled = true;
             categoryComboBox.Location = new Point(718, 279);
             categoryComboBox.Name = "categoryComboBox";
-            categoryComboBox.Size = new Size(299, 38);
+            categoryComboBox.Size = new Size(299, 37);
             categoryComboBox.TabIndex = 21;
             categoryComboBox.Text = "Category";
             // 
             // txtCookingTime
             // 
             txtCookingTime.BackColor = Color.White;
-            txtCookingTime.Font = new Font("Algerian", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
+            txtCookingTime.Font = new Font("Sylfaen", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             txtCookingTime.ForeColor = Color.DarkOliveGreen;
             txtCookingTime.Location = new Point(26, 283);
             txtCookingTime.Multiline = true;
@@ -307,12 +309,13 @@
             // txtRecipeInstructions
             // 
             txtRecipeInstructions.BackColor = Color.White;
-            txtRecipeInstructions.Font = new Font("Algerian", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
+            txtRecipeInstructions.Font = new Font("Sylfaen", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             txtRecipeInstructions.ForeColor = Color.DarkOliveGreen;
             txtRecipeInstructions.Location = new Point(26, 377);
             txtRecipeInstructions.Multiline = true;
             txtRecipeInstructions.Name = "txtRecipeInstructions";
             txtRecipeInstructions.PlaceholderText = "Instructions";
+            txtRecipeInstructions.ScrollBars = ScrollBars.Vertical;
             txtRecipeInstructions.Size = new Size(444, 457);
             txtRecipeInstructions.TabIndex = 19;
             txtRecipeInstructions.TabStop = false;
@@ -333,7 +336,7 @@
             // txtRecipeTitle
             // 
             txtRecipeTitle.BackColor = Color.White;
-            txtRecipeTitle.Font = new Font("Algerian", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
+            txtRecipeTitle.Font = new Font("Sylfaen", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             txtRecipeTitle.ForeColor = Color.DarkOliveGreen;
             txtRecipeTitle.Location = new Point(206, 16);
             txtRecipeTitle.Multiline = true;
@@ -387,7 +390,7 @@
             // newCategory
             // 
             newCategory.BackColor = Color.White;
-            newCategory.Font = new Font("Algerian", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
+            newCategory.Font = new Font("Sylfaen", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             newCategory.ForeColor = Color.DarkOliveGreen;
             newCategory.Location = new Point(19, 56);
             newCategory.Multiline = true;
@@ -399,10 +402,11 @@
             // 
             // comboBoxCategory
             // 
+            comboBoxCategory.Font = new Font("Sylfaen", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             comboBoxCategory.FormattingEnabled = true;
             comboBoxCategory.Location = new Point(19, 133);
             comboBoxCategory.Name = "comboBoxCategory";
-            comboBoxCategory.Size = new Size(390, 33);
+            comboBoxCategory.Size = new Size(390, 37);
             comboBoxCategory.TabIndex = 28;
             // 
             // newCategoryBtn
@@ -434,7 +438,7 @@
             // newProduct
             // 
             newProduct.BackColor = Color.White;
-            newProduct.Font = new Font("Algerian", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
+            newProduct.Font = new Font("Sylfaen", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             newProduct.ForeColor = Color.DarkOliveGreen;
             newProduct.Location = new Point(6, 50);
             newProduct.Multiline = true;
@@ -447,7 +451,7 @@
             // newProductDescription
             // 
             newProductDescription.BackColor = Color.White;
-            newProductDescription.Font = new Font("Algerian", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
+            newProductDescription.Font = new Font("Sylfaen", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             newProductDescription.ForeColor = Color.DarkOliveGreen;
             newProductDescription.Location = new Point(6, 120);
             newProductDescription.Multiline = true;
@@ -483,10 +487,11 @@
             // 
             // ProductComboBox
             // 
+            ProductComboBox.Font = new Font("Sylfaen", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             ProductComboBox.FormattingEnabled = true;
             ProductComboBox.Location = new Point(6, 194);
             ProductComboBox.Name = "ProductComboBox";
-            ProductComboBox.Size = new Size(403, 33);
+            ProductComboBox.Size = new Size(403, 37);
             ProductComboBox.TabIndex = 26;
             // 
             // openFileDialog1

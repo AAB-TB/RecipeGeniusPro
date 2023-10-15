@@ -65,7 +65,7 @@
             // 
             // aboutBtn
             // 
-            aboutBtn.Font = new Font("Algerian", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
+            aboutBtn.Font = new Font("Sylfaen", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             aboutBtn.ForeColor = Color.DarkGreen;
             aboutBtn.Location = new Point(24, 675);
             aboutBtn.Name = "aboutBtn";
@@ -77,7 +77,7 @@
             // 
             // homeBtn
             // 
-            homeBtn.Font = new Font("Algerian", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
+            homeBtn.Font = new Font("Sylfaen", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             homeBtn.ForeColor = Color.DarkGreen;
             homeBtn.Location = new Point(24, 384);
             homeBtn.Name = "homeBtn";
@@ -101,19 +101,19 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.BackColor = Color.LightSalmon;
-            label1.Font = new Font("Algerian", 16.2F, FontStyle.Bold, GraphicsUnit.Point);
+            label1.BackColor = Color.WhiteSmoke;
+            label1.Font = new Font("Sylfaen", 19.8000011F, FontStyle.Bold, GraphicsUnit.Point);
             label1.ForeColor = Color.DarkGreen;
             label1.Location = new Point(316, 59);
             label1.Name = "label1";
-            label1.Size = new Size(329, 31);
+            label1.Size = new Size(327, 44);
             label1.TabIndex = 15;
             label1.Text = "List Of our products";
             // 
             // textBoxProductDetails
             // 
-            textBoxProductDetails.BackColor = Color.LightSalmon;
-            textBoxProductDetails.Font = new Font("Algerian", 13.8F, FontStyle.Italic, GraphicsUnit.Point);
+            textBoxProductDetails.BackColor = Color.WhiteSmoke;
+            textBoxProductDetails.Font = new Font("Sylfaen", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             textBoxProductDetails.ForeColor = Color.DarkGreen;
             textBoxProductDetails.Location = new Point(65, 104);
             textBoxProductDetails.Multiline = true;
