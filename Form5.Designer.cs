@@ -234,7 +234,7 @@
             // 
             deleteIngredient.Font = new Font("Algerian", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             deleteIngredient.ForeColor = Color.DarkGreen;
-            deleteIngredient.Location = new Point(800, 652);
+            deleteIngredient.Location = new Point(800, 793);
             deleteIngredient.Name = "deleteIngredient";
             deleteIngredient.Size = new Size(226, 41);
             deleteIngredient.TabIndex = 23;
@@ -246,7 +246,7 @@
             // 
             ingredientBtn.Font = new Font("Algerian", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             ingredientBtn.ForeColor = Color.DarkGreen;
-            ingredientBtn.Location = new Point(545, 652);
+            ingredientBtn.Location = new Point(545, 793);
             ingredientBtn.Name = "ingredientBtn";
             ingredientBtn.Size = new Size(227, 41);
             ingredientBtn.TabIndex = 12;
@@ -263,11 +263,11 @@
             dataGridViewIngredients.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewIngredients.Columns.AddRange(new DataGridViewColumn[] { ProductList, QuantityBox });
             dataGridViewIngredients.GridColor = Color.White;
-            dataGridViewIngredients.Location = new Point(545, 432);
+            dataGridViewIngredients.Location = new Point(545, 377);
             dataGridViewIngredients.Name = "dataGridViewIngredients";
             dataGridViewIngredients.RowHeadersWidth = 51;
             dataGridViewIngredients.RowTemplate.Height = 29;
-            dataGridViewIngredients.Size = new Size(481, 188);
+            dataGridViewIngredients.Size = new Size(481, 410);
             dataGridViewIngredients.TabIndex = 22;
             // 
             // ProductList
