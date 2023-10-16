@@ -871,7 +871,7 @@ namespace RecipeGenius
 
                 foreach (Recipe data in searchResults)
                 {
-                    RecipeUserControl recipeUserControl = new RecipeUserControl(this, data, false);
+                    RecipeUserControl recipeUserControl = new RecipeUserControl(this, data, true);
                     recipeUserControl.SetImage(data.ImagePath);
                     recipeUserControl.SetTitle(data.Title);
                     flowLayoutPanel1.Controls.Add(recipeUserControl);
