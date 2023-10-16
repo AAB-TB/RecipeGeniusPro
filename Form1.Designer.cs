@@ -132,7 +132,8 @@
             suggestionsListBox.ItemHeight = 29;
             suggestionsListBox.Location = new Point(249, 210);
             suggestionsListBox.Name = "suggestionsListBox";
-            suggestionsListBox.Size = new Size(598, 62);
+            suggestionsListBox.ScrollAlwaysVisible = true;
+            suggestionsListBox.Size = new Size(598, 120);
             suggestionsListBox.TabIndex = 6;
             suggestionsListBox.Visible = false;
             suggestionsListBox.SelectedIndexChanged += suggestionsListBox_SelectedIndexChanged_1;
@@ -140,9 +141,9 @@
             // flowLayoutPanel1
             // 
             flowLayoutPanel1.AutoScroll = true;
-            flowLayoutPanel1.Location = new Point(31, 320);
+            flowLayoutPanel1.Location = new Point(31, 278);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(1131, 551);
+            flowLayoutPanel1.Size = new Size(1131, 593);
             flowLayoutPanel1.TabIndex = 5;
             // 
             // searchTextBox
